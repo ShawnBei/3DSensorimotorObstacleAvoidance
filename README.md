@@ -4,7 +4,7 @@ Final Project, University of Bristol, MSc Robotics
 
 
 
-##Requirements
+## Requirements
 
 -  compare how my work different from others (better/worse)
 - evaluation methods (ask supervisor)
@@ -17,7 +17,7 @@ Final Project, University of Bristol, MSc Robotics
 
 
 
-##Introduction
+## Introduction
 
 - In this paper, we propose that the Interaural Intensity Difference (**IID**) and travel time of the **first millisecond of the echo train** are sufficient cues for obstacle avoidance.
 - Rhinolophidae (long narrow band signal) **—>** other bats (short broad band signal)
@@ -29,7 +29,7 @@ Final Project, University of Bristol, MSc Robotics
 
 
 
-##Method
+## Method
 
 The intensity **g i** (in dB) of the echo received from reflector i:
 
@@ -53,17 +53,21 @@ The intensity **g i** (in dB) of the echo received from reflector i:
 
 **ϕ i,t** is a random phase angle (between −π and π) modeling the interference between narrowband echoes. Note that this phase angle is randomized independently for each reﬂector i and ear t.
 
+The echoes received at each ear t during the first millisecond after the arrival of the first echo are summed with randomized phase shifts.
+
 ![{\displaystyle e^{ix}=\cos x+i\sin x,}](https://wikimedia.org/api/rest_v1/media/math/render/svg/aab1fcd1a6db5cc6678bb9cbd871580eeeb86eda)
 
+​              
 
 
-## Tasks
+
+## Task Log
 
 24/06
 
 - Can I get any example code? / tutorial?  
 
-- - How the bat interacts with the artificial environments?
+  - How the bat interacts with the artificial environments?
 
 - Echoes from all reflectors/obstacles need to be calculated?
 
@@ -86,6 +90,23 @@ The intensity **g i** (in dB) of the echo received from reflector i:
 
 - ~~define temperature and humidity —> af~~
 - ~~try to build a simple model and a timeline with small amount of obstacles~~
-- try to determine g<sub>t</sub> 
+- ~~try to determine g<sub>t</sub>~~ 
 - set threhold in matrix / echoes from back set to 0 dB
-- 
+
+
+
+28/06
+
+- ~~try to determine g<sub>t</sub>~~
+- A static model has been built, then is to build a dynamic model / make it move
+
+
+
+04/07
+
+- modified existing code —> able to run
+- Next:
+  - ~~write makeWorld();~~
+  - simulate in 3D space
+  - add gravity / limitation of 
+  - add target search

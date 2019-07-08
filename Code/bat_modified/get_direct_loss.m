@@ -2,8 +2,8 @@ function direct_loss = get_direct_loss(flag,theta)
 
 m = size(theta, 1);
 switch flag
-    case 1 % left ear
-        thetaLeft = theta - 2.0944;
+    case 1 % left ear 
+        thetaLeft = theta - 2.3562;
         for i = 1:m
             if thetaLeft(i,1) > pi
                 thetaLeft(i,1) = 2*pi - thetaLeft(i,1);
@@ -14,7 +14,7 @@ switch flag
         direct_loss = (cos(thetaLeft) - 1) * 20;
         
     case 2 % right ear
-        thetaRight = theta - 1.0472;
+        thetaRight = theta - 0.7854;
         for i = 1:m
             if thetaRight(i,1) > pi
                 thetaRight(i,1) = 2*pi - thetaRight(i,1);

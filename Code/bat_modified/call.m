@@ -3,9 +3,10 @@ function out = call(flag,theta,range,delay_window,reflector_strenght)
 call_db = 120;
 % F = TriScatteredInterp(thetai(:),hrtf(:));
 
-delays = 2*(range/343); %in seconds
+delays = 2*(range/340); %in seconds
 
 spread_loss = 40*log10(0.1./range);
+spread_loss(spread_loss>0)=0;
 absorp_loss = -1.3*(2*range);
 
 % determine direct_loss

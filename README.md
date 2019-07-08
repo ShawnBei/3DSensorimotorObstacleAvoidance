@@ -63,7 +63,7 @@ The echoes received at each ear t during the first millisecond after the arrival
 
 ## Task Log
 
-24/06
+#### 24/06
 
 - Can I get any example code? / tutorial?  
 
@@ -79,14 +79,14 @@ The echoes received at each ear t during the first millisecond after the arrival
 
 
 
-25/06
+#### 25/06
 
 - ~~find specific directivity of MA40S4R MA40E7R~~
 - ~~define temperature and humidity~~ 
 
 
 
-26/06
+#### 26/06
 
 - ~~define temperature and humidity —> af~~
 - ~~try to build a simple model and a timeline with small amount of obstacles~~
@@ -95,18 +95,29 @@ The echoes received at each ear t during the first millisecond after the arrival
 
 
 
-28/06
+#### 28/06
 
 - ~~try to determine g<sub>t</sub>~~
 - A static model has been built, then is to build a dynamic model / make it move
 
 
 
-04/07
+#### 04/07
 
-- modified existing code —> able to run
+- modified existing code —> able to run
 - Next:
   - ~~write makeWorld();~~
   - simulate in 3D space
   - add gravity / limitation of 
-  - add target search
+  - add target search 
+
+#### 08/07
+
+- Code decription:
+  1. Create an environment —> R
+  2. Set iteration times / replication times 
+  3. For each ear, **gi** is calculated and filtered (gi for ears are independent)
+  4. **gt** is calculated after then
+  5. Velocity is determined by the distance to the closest reflector(filtered)
+  6. Rotate world and calculate bat's position
+- add target search

@@ -46,7 +46,7 @@ for ExperimentNr = RunExperiments
         case 1
             if isnan(settings.nr_replications);settings.nr_replications=1;end
             settings.maxdist =20;
-            settings.iteration_steps = 100;
+            settings.iteration_steps = 250;
             settings.worldshape = 'H';
             ClusterSize = 250;
             ClustVar = 0.5;
@@ -216,7 +216,7 @@ for ExperimentNr = RunExperiments
     handles =      NaN(settings.iteration_steps, 1, nr_conditions, settings.nr_replications);
     densities =    NaN(settings.iteration_steps, 1, nr_conditions, settings.nr_replications);
     batpositions = NaN(settings.iteration_steps, 3, nr_conditions, settings.nr_replications);
-    reflectors =   NaN(settings.iteration_steps, 4, nr_conditions, settings.nr_replications);
+    reflectors_nr =NaN(settings.iteration_steps, 4, nr_conditions, settings.nr_replications);
     steermats =    NaN(settings.iteration_steps, 4, nr_conditions, settings.nr_replications);
     
     for replication = 1:settings.nr_replications
@@ -250,16 +250,21 @@ for ExperimentNr = RunExperiments
 %              3   0   2;
 %              4   0   2;
 %              0   0   2];
-         
-         [x,y,z] = ndgrid(-5:0.1:5, 0, -5:0.1:5);
-         R = [x(:),y(:),z(:)];
 
+         % vertical wires 2d
+         [x,y,z] = ndgrid(-10:1:10, 0, -10:1:10);
+         R = [x(:),y(:),z(:)];
+         
+         % corridor 2d
+%          [x,y,z] = ndgrid(-0.5:1:0.5, 0, -10:0.01:10);
+%          R = [x(:),y(:),z(:)];
+%          
          
 %         if strcmp(settings.worldshape,'T');  R = MyTorus(10,2,45);end
 %         if strcmp(settings.worldshape,'MH'); R = MakeMogdansWorld(settings.maxdist,'H',0.15);end
 %         if strcmp(settings.worldshape,'MV'); R = MakeMogdansWorld(settings.maxdist,'V',0.15);end
 %         if strcmp(settings.worldshape,'R1'); R = MakeRealWorld(1);end
-%         if strcmp(settings.worldshape,'R2'); R = MakeRealWorld(2);end
+%         if strcmp(settings.worldshape,'R2')®; R = MakeRealWorld(2);end
 %         if isempty(R); R = MakeWorld6(settings.maxdist,settings.worldshape,Nrclusters,ClusterSize,ClustVar);end
 %         worlds{replication}=R;
 %         parfor condition = 1:nr_conditions
@@ -281,7 +286,9 @@ for ExperimentNr = RunExperiments
             handles(:,:,condition,replication)     =output.handlelog;
             batpositions(:,:,condition,replication)=output.batposlog;
             steermats(:,:,condition,replication)   =output.steermatlog;
-            reflectors(:,:,condition,replication)  =output.reflectors;
+            reflectors_nr(:,:,condition,replication)  =output.reflectors_nr;
+            
+            reflectors_pos_last = output.reflectors_pos_last;
 %         end
     end
     
@@ -292,10 +299,13 @@ for ExperimentNr = RunExperiments
     
     % plot bat_position and reflectors
     figure (1)
+    set(1,'position',[800 300 700 700])
     plot3(batpositions(:,1), batpositions(:,2), batpositions(:,3), '.r')
     hold on
     plot3(R(:,1),R(:,2),R(:,3),'.b')
     axis equal
+%     axis auto
+    xlim([-10 10])
     xlabel('X')
     ylabel('Y')
     zlabel('Z')

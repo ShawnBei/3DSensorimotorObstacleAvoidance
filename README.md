@@ -121,3 +121,23 @@ The echoes received at each ear t during the first millisecond after the arrival
   5. Velocity is determined by the distance to the closest reflector(filtered)
   6. Rotate world and calculate bat's position
 - add target search
+  - First attempt: 
+    1. Compare **current_az** vector and **target** vector —> delta theta; 
+    2. Add delta theta to current_az;
+
+#### 09/07
+
+Second attempt:
+
+1. When the closest distance is bigger than 0.034, control the bat flying towards the target;
+
+- Test it in 3d;
+- Build more complicated environment;
+
+#### 10/07
+
+- Find a minimum distance for all situation
+  - If the minimum value is too small, then there is not enough room for the bat to turn around, so if we want the bat to avoid a large cluster of reflectors, the minimum value should set higher, which gives the bat enough room to slow down and turn a bigger angle and then able to avoid clusters correctly.
+  - However, when the minimum value is big, it will not able to perform target search properly in dense habitats. The dense simulation must be abandened in this way.
+- See how angular velocity effects oscillations
+- 

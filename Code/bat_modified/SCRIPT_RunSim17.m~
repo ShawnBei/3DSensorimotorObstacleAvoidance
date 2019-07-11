@@ -46,7 +46,7 @@ for ExperimentNr = RunExperiments
         case 1
             if isnan(settings.nr_replications);settings.nr_replications=1;end
             settings.maxdist =20;
-            settings.iteration_steps = 300;
+            settings.iteration_steps = 250;
             settings.worldshape = 'H';
             ClusterSize = 250;
             ClustVar = 0.5;
@@ -262,18 +262,15 @@ for ExperimentNr = RunExperiments
         
         %% Circular corridor 2d
         r1 = 4;
-        r2 = 5.4;
-        range = (0:0.001:2*pi)';
+        r2 = 5;
+        range = (0:0.0001:2*pi)';
         x1 = 5 + r1 * cos(range);
         z1 = r1 * sin(range);
         y1 = zeros(length(range),1);
         x2 = 5 + r2 * cos(range);
-        z2 = r2 * sin(range);
-        y2 = zeros(length(range),1);
         
-        R1 = [x1(:), y1(:), z1(:)];
-        R2 = [x2(:), y2(:), z2(:)];
-        R = [R1;R2];
+        
+        R = [x1(:), y1(:), z1(:)];
         
         %% Target
         a = 9.5;
@@ -328,7 +325,7 @@ for ExperimentNr = RunExperiments
     plot3(R(:,1),R(:,2),R(:,3),'.b')
     axis equal
     %     axis auto
-    xlim([-2 15])
+    xlim([-10 10])
     xlabel('X')
     ylabel('Y')
     zlabel('Z')

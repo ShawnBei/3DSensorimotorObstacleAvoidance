@@ -20,17 +20,19 @@ max_slope = settings.max_slope;
 constrained = settings.constrained;
 system = settings.system;
 
+target = settings.target;
+
 % if strcmp(system,'CF')
 %     [L1,R1]=get_hrtf(-15,30,emission_freq);
 %     [L2,R2]=get_hrtf(15,0,emission_freq);
 %     [L3,R3]=get_hrtf(0,15,emission_freq);
-% end 
+% end
 
 % if strcmp(system,'FM')
 %     [L1,R1]=get_hrtf_phillo(-10,+20,emission_freq);
 %     [L3,R3]=get_hrtf_phillo(+05,+05,emission_freq);
 % end
-% 
+%
 % if earsfixed == 1 && earsfixed_off_axis == 0
 %     L1 = L3;
 %     R1 = R3;
@@ -56,7 +58,6 @@ X=reflectors(:,1);Y=reflectors(:,2);Z=reflectors(:,3);
 reflectors_pos_last = [az,el,objrange];
 
 bat_pos = [0 0 0];
-% bat_pos = [10 0 10];
 bat_rot = eye(3);
 
 
@@ -72,35 +73,35 @@ for iteration = 1:iteration_steps
     [az,el,objrange]= mycart2sph(X,Y,Z);
     
     
-%     VS=1;
-%     if strcmp(system,'FM');VS=0;end
+    %     VS=1;
+    %     if strcmp(system,'FM');VS=0;end
     reflector_strenght = randrange(min(attenuation_range(:)),max(attenuation_range(:)),size(az,1));
     
-%     if earsfixed_off_axis
-%         LEFT = call(L1,az,el,objrange,linear_velocity*VS,emission_freq,delay_window,fov,reflector_strenght);
-%         RIGHT= call(R1,az,el,objrange,linear_velocity*VS,emission_freq,delay_window,fov,reflector_strenght);
-%         options = [1 -1;-1 1];
-%     else
-%         if mod(iteration,2)==0
-            LEFT = call(1,  az,objrange,delay_window,reflector_strenght);
-            RIGHT= call(2,  az,objrange,delay_window,reflector_strenght);
-            TOP = call(3,   el,objrange,delay_window,reflector_strenght);
-            BOTTOM = call(4,el,objrange,delay_window,reflector_strenght);
-            options = [1 -1;1 -1];
-%         else
-%             LEFT = call(L2,az,el,objrange,linear_velocity,emission_freq,delay_window,fov,reflector_strenght);
-%             RIGHT= call(R2,az,el,objrange,linear_velocity,emission_freq,delay_window,fov,reflector_strenght);
-%             options = [1 1;-1 -1];
-%         end
-%     end
+    %     if earsfixed_off_axis
+    %         LEFT = call(L1,az,el,objrange,linear_velocity*VS,emission_freq,delay_window,fov,reflector_strenght);
+    %         RIGHT= call(R1,az,el,objrange,linear_velocity*VS,emission_freq,delay_window,fov,reflector_strenght);
+    %         options = [1 -1;-1 1];
+    %     else
+    %         if mod(iteration,2)==0
+    LEFT = call(1,  az,objrange,delay_window,reflector_strenght);
+    RIGHT= call(2,  az,objrange,delay_window,reflector_strenght);
+    TOP = call(3,   el,objrange,delay_window,reflector_strenght);
+    BOTTOM = call(4,el,objrange,delay_window,reflector_strenght);
+    options = [1 -1;1 -1];
+    %         else
+    %             LEFT = call(L2,az,el,objrange,linear_velocity,emission_freq,delay_window,fov,reflector_strenght);
+    %             RIGHT= call(R2,az,el,objrange,linear_velocity,emission_freq,delay_window,fov,reflector_strenght);
+    %             options = [1 1;-1 -1];
+    %         end
+    %     end
     
     %log doppler and gain for left ear
-%     if log_gain_doppler == 1
-%         doppler = LEFT.shift;
-%         gain = LEFT.gains_linear;
-%         gain_log{iteration} = gain;
-%         doppler_log{iteration} = doppler;
-%     end
+    %     if log_gain_doppler == 1
+    %         doppler = LEFT.shift;
+    %         gain = LEFT.gains_linear;
+    %         gain_log{iteration} = gain;
+    %         doppler_log{iteration} = doppler;
+    %     end
     
     %get object distances
     objdist_L = LEFT.range;
@@ -110,7 +111,7 @@ for iteration = 1:iteration_steps
     objdist = [objdist_L(:);objdist_R(:);objdist_T(:);objdist_B(:)];
     if isempty(objdist);objdist=1000;end
     if isnan(objdist);objdist=1000;end
-    closest_distance = min(objdist); 
+    closest_distance = min(objdist);
     
     %set new timescale, magnitude and lineair velocity
     %
@@ -121,11 +122,11 @@ for iteration = 1:iteration_steps
     ipi = 0.1;
     
     %%%% calculate the desired velocity
-    linear_velocity = interp1([2000 5 0],[max_vel max_vel 0.3],closest_distance); 
+    linear_velocity = interp1([2000 5 0],[max_vel max_vel 0.3],closest_distance);
     if isnan(linear_velocity);linear_velocity=max_vel;end
     
     %%%% angular velocity related to linear velocity
-    magnitude = interp1([0 10],[666 -500],linear_velocity); 
+    magnitude = interp1([0 10],[666 -500],linear_velocity);
     if magnitude<0;magnitude=0;end
     
     %set  rotation time and processing time
@@ -141,12 +142,12 @@ for iteration = 1:iteration_steps
         topgains = TOP.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(TOP.gains_linear,1)));
         bottomgains = BOTTOM.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(BOTTOM.gains_linear,1)));
     end
-%     if rand_phase==0
-%         leftgains = LEFT.gains_linear.*exp(sqrt(-1)*randrange(0,0,size(LEFT.gains_linear)));
-%         rightgains = RIGHT.gains_linear.*exp(sqrt(-1)*randrange(0,0,size(RIGHT.gains_linear)));
-%     end
+    %     if rand_phase==0
+    %         leftgains = LEFT.gains_linear.*exp(sqrt(-1)*randrange(0,0,size(LEFT.gains_linear)));
+    %         rightgains = RIGHT.gains_linear.*exp(sqrt(-1)*randrange(0,0,size(RIGHT.gains_linear)));
+    %     end
     
-    nr_reflectors = [sum(LEFT.gains > 0) sum(RIGHT.gains > 0) sum(TOP.gains > 0) sum(BOTTOM.gains > 0)]; 
+    nr_reflectors = [sum(LEFT.gains > 0) sum(RIGHT.gains > 0) sum(TOP.gains > 0) sum(BOTTOM.gains > 0)];
     %%%% number of relectors after selection
     
     %%%% gt
@@ -158,92 +159,174 @@ for iteration = 1:iteration_steps
     current_az_sign = options(1,minindexLR);
     current_el_sign = options(2,minindexTB);
     
-%     if gorandom>0;current_az_sign = randsample([-1,1],1);current_el_sign = randsample([-1,1],1);end
-%     if gorandom>1;magnitude = randrange(0,magnitude,[1 1]);end
-%     if earsfixed == 1;current_el_sign = randsample([-1,1],1);end
+    %     if gorandom>0;current_az_sign = randsample([-1,1],1);current_el_sign = randsample([-1,1],1);end
+    %     if gorandom>1;magnitude = randrange(0,magnitude,[1 1]);end
+    %     if earsfixed == 1;current_el_sign = randsample([-1,1],1);end
     
     %scale azimuth and elevation rotation with rotation time
-    current_az=current_az_sign*magnitude*rotation_time;
-    current_el=current_el_sign*magnitude*rotation_time;
+    current_az=deg2rad(current_az_sign*magnitude*rotation_time);
+    current_el=deg2rad(current_el_sign*magnitude*rotation_time);
     
-    %apply elevation and azimuth constraints
+    %% 1. compare current vector and target vector
+    %     target_vector = target - bat_pos;
+    %     target_az = atan2(target_vector(3), target_vector(1));
+    %     target_el = atan2(target_vector(2), target_vector(3));
+    %     %     target_vector = target_vector/(sqrt(target_vector(1)^2 + target_vector(2)^2 + target_vector(3)^2));
+    %
+    %     rads = deg2rad(current_el);Rot1 = [1 0 0;0 cos(rads) -sin(rads);0 sin(rads) cos(rads)];
+    %     rads = deg2rad(current_az);Rot2 = [cos(rads) 0 -sin(rads);0 1 0;sin(rads) 0 cos(rads)];
+    %     bat_current_rot = bat_rot * Rot1 * Rot2;
+    %     bat_current_displacement = bat_current_rot * [0;0;1];
+    %     bat_current_displacement = bat_current_displacement';
+    %     bat_current_az = atan2(bat_current_displacement(3), bat_current_displacement(1));
+    %     bat_current_el = atan2(bat_current_displacement(2), bat_current_displacement(3));
+    %
+    %     delta_az = bat_current_az - target_az;
+    %     delta_el = bat_current_el - target_el;
+    %
+    %     if delta_az > pi
+    %         delta_az = 2*pi - delta_az;
+    %     elseif delta_az < -pi
+    %         delta_az = 2*pi + delta_az;
+    %     end
+    %     if delta_el > pi
+    %         delta_el = 2*pi - delta_el;
+    %     elseif delta_el < -pi
+    %         delta_el = 2*pi + delta_el;
+    %     end
+    %
+    %     current_az = current_az - delta_az*0.5;
+    %     current_el = current_el - delta_el*0.5;
+    
+    
+    %% 2. Fly towards target except the closest distance is smaller than 0.034m
+    %(might move this block before current_az calculation)
+    
+    % Determine if the distance is bigger than 0.034m 
+    if closest_distance > 0.034
+        % Calculate target vector and the desired turning angle(az and el)
+        target_vector = target - bat_pos;
+        target_az = atan2(target_vector(3), target_vector(1));
+        target_el = atan2(target_vector(2), target_vector(3));
+        bat_displacement = bat_rot * [0;0;1];
+        bat_displacement = bat_displacement';
+        bat_az = atan2(bat_displacement(3),bat_displacement(1));
+        bat_el = atan2(bat_displacement(2),bat_displacement(3));
+        
+        % Compare bat az and target vector
+        delta_az = bat_az - target_az;
+        delta_el = bat_el - target_el;
+    
+        if delta_az > pi
+            delta_az = -2*pi + delta_az;
+        elseif delta_az < -pi
+            delta_az = 2*pi + delta_az;
+        end
+        if delta_el > pi
+            delta_el = -2*pi + delta_el;
+        elseif delta_el < -pi
+            delta_el = 2*pi + delta_el; 
+        end
+    
+        % Determine if delta angle can be achieved in this iteration
+        delta_az_abs = abs(delta_az);
+        delta_el_abs = abs(delta_el);
+        Max_angle = deg2rad(magnitude*rotation_time);
+        
+        if delta_az_abs < Max_angle
+            current_az = -delta_az;
+        else
+            current_az = sign(delta_az) * -Max_angle;
+        end
+        if delta_el_abs < Max_angle
+            current_el = -delta_el;
+        else
+            current_el = sign(delta_el) * -Max_angle;
+        end
+
+    end
+    
+
+    %% apply elevation and azimuth constraints
     if strcmp(worldshape,'H');current_el=0;end
-%     if strcmp(worldshape,'V');current_az=0;end
+    %     if strcmp(worldshape,'V');current_az=0;end
     %if strcmp(worldshape,'T');current_el=0;end
-%     if strcmp(worldshape,'R1');current_el=0;end
-%     if strcmp(worldshape,'R2');current_el=0;end
-%     if strcmp(worldshape,'MH');current_el=0;end
-%     if strcmp(worldshape,'MV');current_az=0;end
+    %     if strcmp(worldshape,'R1');current_el=0;end
+    %     if strcmp(worldshape,'R2');current_el=0;end
+    %     if strcmp(worldshape,'MH');current_el=0;end
+    %     if strcmp(worldshape,'MV');current_az=0;end
     
     %constrain elevation
-%     if current_el > 0;el_step = -5;end
-%     if current_el < 0;el_step =  5;end
+    %     if current_el > 0;el_step = -5;end
+    %     if current_el < 0;el_step =  5;end
     
-    %%%% set constrains to el 
-%     while 1
-%         rads = deg2rad(current_el);Rot1 = [1 0 0;0 cos(rads) -sin(rads);0 sin(rads) cos(rads)];
-%         rads = deg2rad(current_az);Rot2 = [cos(rads) 0 -sin(rads);0 1 0;sin(rads) 0 cos(rads)];
-%         predicted_bat_rot = bat_rot *  Rot1 * Rot2;
-%         
-%         pointing_vector = predicted_bat_rot*[0;0;1];
-%         
-%         alpha = [0 1 0] * pointing_vector; %dot product (single number)
-%         angle_y = rad2deg(acos(alpha)); %angle with y vector
-%         world_elevation = 90 - angle_y;
-%         %disp([angle_y world_elevation])
-%         elevation_ok = inrange(world_elevation,[-max_slope max_slope]);
-%         if constrained==0;break;end
-%         if elevation_ok;break;end
-%         current_el = current_el + el_step;
-%     end
+    %%%% set constrains to el
+    %     while 1
+    %         rads = deg2rad(current_el);Rot1 = [1 0 0;0 cos(rads) -sin(rads);0 sin(rads) cos(rads)];
+    %         rads = deg2rad(current_az);Rot2 = [cos(rads) 0 -sin(rads);0 1 0;sin(rads) 0 cos(rads)];
+    %         predicted_bat_rot = bat_rot *  Rot1 * Rot2;
+    %
+    %         pointing_vector = predicted_bat_rot*[0;0;1];
+    %
+    %         alpha = [0 1 0] * pointing_vector; %dot product (single number)
+    %         angle_y = rad2deg(acos(alpha)); %angle with y vector
+    %         world_elevation = 90 - angle_y;
+    %         %disp([angle_y world_elevation])
+    %         elevation_ok = inrange(world_elevation,[-max_slope max_slope]);
+    %         if constrained==0;break;end
+    %         if elevation_ok;break;end
+    %         current_el = current_el + el_step;
+    %     end
     
     
     % wandering handling
     last_wandering = last_wandering + 1;
-%     is_wandering = 0;
-%     if ~strcmp(worldshape(1),'R') && sqrt(sum(bat_pos.^2))>(maxdist-0.15);is_wandering = 1;end
-%     if strcmp(worldshape(1),'R') && ~point_within(bat_pos,X,Y,Z) == 1;is_wandering = 1;end
-%     
-%     if is_wandering == 1
-%         homepos = bat_pos*-bat_rot;
-%         [home_az,home_el,~]=mycart2sph(homepos(1),homepos(2),homepos(3));
-%         current_az = home_az;
-%         current_el = -home_el;
-%         rotation_time = 0.1;
-%         handlelog(iteration-1)=1;
-%         last_wandering = 0;
-%     end
+    %     is_wandering = 0;
+    %     if ~strcmp(worldshape(1),'R') && sqrt(sum(bat_pos.^2))>(maxdist-0.15);is_wandering = 1;end
+    %     if strcmp(worldshape(1),'R') && ~point_within(bat_pos,X,Y,Z) == 1;is_wandering = 1;end
+    %
+    %     if is_wandering == 1
+    %         homepos = bat_pos*-bat_rot;
+    %         [home_az,home_el,~]=mycart2sph(homepos(1),homepos(2),homepos(3));
+    %         current_az = home_az;
+    %         current_el = -home_el;
+    %         rotation_time = 0.1;
+    %         handlelog(iteration-1)=1;
+    %         last_wandering = 0;
+    %     end
     
-%     if last_wandering>1
-        %move world--during processing and wait
-        movement = linear_velocity * processing_time;
-%         [az,el,objrange]=worldflow([az el objrange],0,0,movement);
-        [X,Y,Z] = worldflow([X,Y,Z], 0, 0, movement);
-        %move bat--during processing and wait
-%         rads = deg2rad(0);Rot1 = [1 0 0;0 cos(rads) sin(rads);0 -sin(rads) cos(rads)];
-        rads = deg2rad(0);Rot1 = [1 0 0;0 cos(rads) -sin(rads);0 sin(rads) cos(rads)];
-        rads = deg2rad(0);Rot2 = [cos(rads) 0 -sin(rads);0 1 0;sin(rads) 0 cos(rads)];
-        displacement = bat_rot * (Rot1 * Rot2 * [0;0;1]);
-        bat_rot = bat_rot *  Rot1 * Rot2;
-        bat_pos = bat_pos + displacement' * movement;
-%         reflectors_pos_last = [az,el,objrange];
-%     end
-    %move world--during rotation time
+    %     if last_wandering>1
+    %% move world--during processing and wait
+    movement = linear_velocity * processing_time;
+    %         [az,el,objrange]=worldflow([az el objrange],0,0,movement);
+    [X,Y,Z] = worldflow([X,Y,Z], 0, 0, movement);
+    %move bat--during processing and wait
+    %         rads = deg2rad(0);Rot1 = [1 0 0;0 cos(rads) sin(rads);0 -sin(rads) cos(rads)];
+    %         rads = deg2rad(0);Rot1 = [1 0 0;0 cos(rads) -sin(rads);0 sin(rads) cos(rads)];
+    %         rads = deg2rad(0);Rot2 = [cos(rads) 0 -sin(rads);0 1 0;sin(rads) 0 cos(rads)];
+    %         displacement = bat_rot * (Rot1 * Rot2 * [0;0;1]);
+    displacement = bat_rot * [0;0;1];
+    %         bat_rot = bat_rot *  Rot1 * Rot2;
+    bat_pos = bat_pos + displacement' * movement;
+    %         reflectors_pos_last = [az,el,objrange];
+    %     end
+    %% move world--during rotation time
     movement = linear_velocity * rotation_time;
-%     [az,el,objrange]=worldflow([az el objrange],current_az,current_el,movement);
+    %     [az,el,objrange]=worldflow([az el objrange],current_az,current_el,movement);
     [X,Y,Z] = worldflow([X,Y,Z], current_az, current_el, movement);
     %move bat--during rotation time
-%     rads = deg2rad(current_el);Rot1 = [1 0 0;0 cos(rads) sin(rads);0 -sin(rads) cos(rads)];
-    rads = deg2rad(current_el);Rot1 = [1 0 0;0 cos(rads) -sin(rads);0 sin(rads) cos(rads)];
-    rads = deg2rad(current_az);Rot2 = [cos(rads) 0 -sin(rads);0 1 0;sin(rads) 0 cos(rads)];
-    displacement = bat_rot * (Rot1 * Rot2 * [0;0;1]);
+    rads = current_el;Rot1 = [1 0 0;0 cos(rads) -sin(rads);0 sin(rads) cos(rads)];
+    rads = current_az;Rot2 = [cos(rads) 0 -sin(rads);0 1 0;sin(rads) 0 cos(rads)];
+    %     displacement = bat_rot * [0;0;1];
     bat_rot = bat_rot *  Rot1 * Rot2;
-    bat_pos = bat_pos + displacement' * movement;
-%     reflectors_pos_last = [az,el,objrange];
+    displacement = bat_rot * [0;0;1];
     
-    %logging
+    bat_pos = bat_pos + displacement' * movement;
+    %     reflectors_pos_last = [az,el,objrange];
+    
+    %% logging
     velocities(iteration) = linear_velocity;
-    reflectors_nr_Log(iteration,:) = nr_reflectors;  
+    reflectors_nr_Log(iteration,:) = nr_reflectors;
     steermatlog(iteration,:)=steermat;
     objdistlog(iteration) = closest_distance;
     batposlog(iteration,:)=bat_pos;
@@ -252,7 +335,9 @@ for iteration = 1:iteration_steps
     rotation_log_el(iteration) = current_el;
     displayinfo = [iteration current_az current_el linear_velocity];
     str =sprintf('%+03.2f\t\t',displayinfo);disp(str);
-
+    
+    %% Destination check
+    
 end
 
 

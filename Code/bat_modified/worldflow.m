@@ -20,12 +20,12 @@
 
 function [Xnew, Ynew, Znew] = worldflow(oldXYZ, deta_az, deta_el, movement)
 
-rads = deg2rad(-deta_el);
+rads = -deta_el;
 Rot1 = [1   0           0;
         0   cos(rads)   sin(rads);
         0   -sin(rads)  cos(rads)];
     
-rads = deg2rad(-deta_az);
+rads = -deta_az;
 Rot2 = [cos(rads)   0   sin(rads);
         0           1   0;
         -sin(rads)   0   cos(rads)];

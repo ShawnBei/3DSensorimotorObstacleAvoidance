@@ -103,7 +103,7 @@ for iteration = 1:iteration_steps
     %         doppler_log{iteration} = doppler;
     %     end
     
-    %get object distances
+    %% get closest distance
     objdist_L = LEFT.range;
     objdist_R = RIGHT.range;
     objdist_T = TOP.range;
@@ -121,7 +121,7 @@ for iteration = 1:iteration_steps
     %if ipi < 0.06;ipi = 0.05;end
     ipi = 0.1;
     
-    %%%% calculate the desired velocity
+    %% calculate the desired velocity
     linear_velocity = interp1([2000 5 0],[max_vel max_vel 0.3],closest_distance);
     if isnan(linear_velocity);linear_velocity=max_vel;end
     
@@ -135,13 +135,13 @@ for iteration = 1:iteration_steps
     if rotation_time < 0;rotation_time = 0;end
     if processing_time > ipi;processing_time=ipi;end
     
-    %bat steering--------
-    if rand_phase==1
-        leftgains = LEFT.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(LEFT.gains_linear,1)));
-        rightgains = RIGHT.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(RIGHT.gains_linear,1)));
-        topgains = TOP.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(TOP.gains_linear,1)));
-        bottomgains = BOTTOM.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(BOTTOM.gains_linear,1)));
-    end
+    %% bat steering--------
+%     if rand_phase==1
+%         leftgains = LEFT.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(LEFT.gains_linear,1)));
+%         rightgains = RIGHT.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(RIGHT.gains_linear,1)));
+%         topgains = TOP.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(TOP.gains_linear,1)));
+%         bottomgains = BOTTOM.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(BOTTOM.gains_linear,1)));
+%     end
     %     if rand_phase==0
     %         leftgains = LEFT.gains_linear.*exp(sqrt(-1)*randrange(0,0,size(LEFT.gains_linear)));
     %         rightgains = RIGHT.gains_linear.*exp(sqrt(-1)*randrange(0,0,size(RIGHT.gains_linear)));
@@ -150,8 +150,8 @@ for iteration = 1:iteration_steps
     nr_reflectors = [sum(LEFT.gains > 0) sum(RIGHT.gains > 0) sum(TOP.gains > 0) sum(BOTTOM.gains > 0)];
     %%%% number of relectors after selection
     
-    %%%% gt
-    steermat = [abs(sum(leftgains)),abs(sum(rightgains)), abs(sum(topgains)),abs(sum(bottomgains))];
+    %% gt
+    steermat = [abs(sum(LEFT.gains_linear)),abs(sum(RIGHT.gains_linear)), abs(sum(TOP.gains_linear)),abs(sum(BOTTOM.gains_linear))];
     steermat = 20*log10(steermat/(2*10.^-5));
     steermat(isinf(steermat))=0;
     [~,minindexLR]=min(steermat(1,1:2));
@@ -202,53 +202,53 @@ for iteration = 1:iteration_steps
     %% 2. Fly towards target except the closest distance is smaller than 0.034m
     %(might move this block before current_az calculation)
     
-    % Determine if the distance is bigger than 0.034m 
-    if closest_distance > 0.034
-        % Calculate target vector and the desired turning angle(az and el)
-        target_vector = target - bat_pos;
-        target_az = atan2(target_vector(3), target_vector(1));
-        target_el = atan2(target_vector(2), target_vector(3));
-        bat_displacement = bat_rot * [0;0;1];
-        bat_displacement = bat_displacement';
-        bat_az = atan2(bat_displacement(3),bat_displacement(1));
-        bat_el = atan2(bat_displacement(2),bat_displacement(3));
-        
-        % Compare bat az and target vector
-        delta_az = bat_az - target_az;
-        delta_el = bat_el - target_el;
-    
-        if delta_az > pi
-            delta_az = -2*pi + delta_az;
-        elseif delta_az < -pi
-            delta_az = 2*pi + delta_az;
-        end
-        if delta_el > pi
-            delta_el = -2*pi + delta_el;
-        elseif delta_el < -pi
-            delta_el = 2*pi + delta_el; 
-        end
-    
-        % Determine if delta angle can be achieved in this iteration
-        delta_az_abs = abs(delta_az);
-        delta_el_abs = abs(delta_el);
-        Max_angle = deg2rad(magnitude*rotation_time);
-        
-        if delta_az_abs < Max_angle
-            current_az = -delta_az;
-        else
-            current_az = sign(delta_az) * -Max_angle;
-        end
-        if delta_el_abs < Max_angle
-            current_el = -delta_el;
-        else
-            current_el = sign(delta_el) * -Max_angle;
-        end
-
-    end
+%     % Determine if the distance is bigger than 0.034m 
+%     if closest_distance > 0.4
+%         % Calculate target vector and the desired turning angle(az and el)
+%         target_vector = target - bat_pos;
+%         target_az = atan2(target_vector(3), target_vector(1));
+%         target_el = atan2(target_vector(2), target_vector(3));
+%         bat_displacement = bat_rot * [0;0;1];
+%         bat_displacement = bat_displacement';
+%         bat_az = atan2(bat_displacement(3),bat_displacement(1));
+%         bat_el = atan2(bat_displacement(2),bat_displacement(3));
+%         
+%         % Compare bat az and target vector
+%         delta_az = bat_az - target_az;
+%         delta_el = bat_el - target_el;
+%     
+%         if delta_az > pi
+%             delta_az = -2*pi + delta_az;
+%         elseif delta_az < -pi
+%             delta_az = 2*pi + delta_az;
+%         end
+%         if delta_el > pi
+%             delta_el = -2*pi + delta_el;
+%         elseif delta_el < -pi
+%             delta_el = 2*pi + delta_el; 
+%         end
+%     
+%         % Determine if delta angle can be achieved in this iteration
+%         delta_az_abs = abs(delta_az);
+%         delta_el_abs = abs(delta_el);
+%         Max_angle = deg2rad(magnitude*rotation_time);
+%         
+%         if delta_az_abs < Max_angle
+%             current_az = -delta_az;
+%         else
+%             current_az = sign(delta_az) * -Max_angle;
+%         end
+%         if delta_el_abs < Max_angle
+%             current_el = -delta_el;
+%         else
+%             current_el = sign(delta_el) * -Max_angle;
+%         end
+% 
+%     end
     
 
     %% apply elevation and azimuth constraints
-    if strcmp(worldshape,'H');current_el=0;end
+%     if strcmp(worldshape,'H');current_el=0;end
     %     if strcmp(worldshape,'V');current_az=0;end
     %if strcmp(worldshape,'T');current_el=0;end
     %     if strcmp(worldshape,'R1');current_el=0;end
@@ -337,6 +337,7 @@ for iteration = 1:iteration_steps
     str =sprintf('%+03.2f\t\t',displayinfo);disp(str);
     
     %% Destination check
+    
     
 end
 

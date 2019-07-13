@@ -220,37 +220,6 @@ for ExperimentNr = RunExperiments
     steermats =    NaN(settings.iteration_steps, 4, nr_conditions, settings.nr_replications);
     
     for replication = 1:settings.nr_replications
-        %------------------------------------
-        %         try
-        %             dropboxfolder = GetDropboxfolder();
-        %             Experiment = num2str(ExperimentNr);
-        %             Replication = num2str(replication);
-        %             Replications = num2str(settings.nr_replications);
-        %             r = report_generator('Run Simulations',dropboxfolder);
-        %             r.open();
-        %             r.section('Run simulations');
-        %             r.add_text(['Experiments to run: ' sprintf('%i ',RunExperiments)]);
-        %             r.add_text(['Current experiment: ' Experiment]);
-        %             r.add_text(['Replications: ' Replications]);
-        %             r.add_text(['Current replication: ' Replication]);
-        %             r.add_text(['Started @ ' datestr(now)]);
-        %             r.close()
-        %         catch
-        %             disp('Could not generate report...')
-        %         end
-        %------------------------------------
-        %         close all;
-        %         clc;
-        
-        % R is a n*3 matrix stores reflectors position
-        %         R = makeWorld()
-        
-        %         R = [1   0   2;
-        %              2   0   2;
-        %              3   0   2;
-        %              4   0   2;
-        %              0   0   2];
-        
         %% vertical wires 2d
 %         [x,y,z] = ndgrid(-10:0.15:10, 0, -10:0.15:10);
 %         R = [x(:),y(:),z(:)];
@@ -261,19 +230,28 @@ for ExperimentNr = RunExperiments
         %          target = [0,0,-5];
         
         %% Circular corridor 2d
-        r1 = 4;
-        r2 = 5;
-        range = (0:0.0001:2*pi)';
-        x1 = 5 + r1 * cos(range);
-        z1 = r1 * sin(range);
-        y1 = zeros(length(range),1);
-        x2 = 5 + r2 * cos(range);
-        
-        
-        R = [x1(:), y1(:), z1(:)];
+%         r1 = 4;
+%         r2 = 5.4;
+%         range = (0:0.001:2*pi)';
+%         x1 = 5 + r1 * cos(range);
+%         z1 = r1 * sin(range);
+%         y1 = zeros(length(range),1);
+%         x2 = 5 + r2 * cos(range);
+%         z2 = r2 * sin(range);
+%         y2 = zeros(length(range),1);
+%         
+%         R1 = [x1(:), y1(:), z1(:)];
+%         R2 = [x2(:), y2(:), z2(:)];
+%         R = [R1;R2];
+%         
+        %% 3D torus
+        Rring = 3;                              % radius of ring 
+        x0 = 3; y0 = 0; z0 = 0;                 % center of ring
+        Rtorus = 1;                             % radius of torus
+        R = torus(Rring,Rtorus,x0,y0,z0);       
         
         %% Target
-        a = 9.5;
+        a = 10;
         b = 0;
         c = 0;
         target = [a,b,c];
@@ -319,13 +297,15 @@ for ExperimentNr = RunExperiments
     
     % plot bat_position and reflectors
     figure (1)
-    set(1,'position',[800 300 700 700])
+    set(1,'position',[500 300 900 700])
     plot3(batpositions(:,1), batpositions(:,2), batpositions(:,3), '.r')
     hold on
-    plot3(R(:,1),R(:,2),R(:,3),'.b')
-    axis equal
+%     plot3(R(:,1),R(:,2),R(:,3),'.b')
+%     axis equal
     %     axis auto
-    xlim([-10 10])
+%     xlim([-100 100])
+%     ylim([-100 100])
+%     zlim([-10 10])
     xlabel('X')
     ylabel('Y')
     zlabel('Z')

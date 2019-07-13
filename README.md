@@ -63,6 +63,8 @@ The echoes received at each ear t during the first millisecond after the arrival
 
 ## Task Log
 
+### Week 1
+
 #### 24/06
 
 - Can I get any example code? / tutorial?  
@@ -100,7 +102,7 @@ The echoes received at each ear t during the first millisecond after the arrival
 - ~~try to determine g<sub>t</sub>~~
 - A static model has been built, then is to build a dynamic model / make it move
 
-
+### Week 2
 
 #### 04/07
 
@@ -110,6 +112,8 @@ The echoes received at each ear t during the first millisecond after the arrival
   - simulate in 3D space
   - add gravity / limitation of 
   - add target search 
+
+### Week 3
 
 #### 08/07
 
@@ -140,4 +144,38 @@ Second attempt:
   - If the minimum value is too small, then there is not enough room for the bat to turn around, so if we want the bat to avoid a large cluster of reflectors, the minimum value should set higher, which gives the bat enough room to slow down and turn a bigger angle and then able to avoid clusters correctly.
   - However, when the minimum value is big, it will not able to perform target search properly in dense habitats. The dense simulation must be abandened in this way.
 - See how angular velocity effects oscillations
-- 
+
+#### 11/07
+
+- Minimum distance (0.3m, 0.4m)
+  - Due to the random phase angle, it sometimes hit the wall, why we need this random phase angle, what does it do?
+  - It can cause error, the order of gt can be changed because of this.
+
+> **ϕ i,t** is a random phase angle (between −π and π) modeling the interference between narrowband echoes. Note that this phase angle is randomized independently for each reﬂector i and ear t.
+
+- Next step:
+  - Add handness 
+  - Show how angular velocity affects oscillations
+
+#### 12/07
+
+- Minimum speed has been set to 0m/s
+- Minimum distance to perform obstacle avoidance is set to 0.4m
+- Reduce randomness? 
+
+### Skype Meeting 
+
+- How to reduce randomness
+  - constrain the reflector strength / random phase angle
+- Do you have a down direction component yet?
+  If not, think about a component implementing a preference for level flight and perhaps a preferred height. 
+- Turn around when closer than 0.1 m.
+- Evaluate a longer time window.
+- Take out / reduce any random components and see what happens.
+- I don't understand how a random walk can occur in the interplay of a global attraction and local information... Perhaps this is what one needs to focus on.
+- Your aim should be to reduce randomness in the trajectories.
+
+
+
+
+

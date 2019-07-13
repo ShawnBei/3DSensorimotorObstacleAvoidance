@@ -103,7 +103,7 @@ for iteration = 1:iteration_steps
     %         doppler_log{iteration} = doppler;
     %     end
     
-    %get object distances
+    %% get closest distance
     objdist_L = LEFT.range;
     objdist_R = RIGHT.range;
     objdist_T = TOP.range;
@@ -121,8 +121,8 @@ for iteration = 1:iteration_steps
     %if ipi < 0.06;ipi = 0.05;end
     ipi = 0.1;
     
-    %%%% calculate the desired velocity
-    linear_velocity = interp1([2000 5 0],[max_vel max_vel 0.3],closest_distance);
+    %% calculate the desired velocity
+    linear_velocity = interp1([2000 5 0],[max_vel max_vel 0],closest_distance);
     if isnan(linear_velocity);linear_velocity=max_vel;end
     
     %%%% angular velocity related to linear velocity
@@ -135,7 +135,7 @@ for iteration = 1:iteration_steps
     if rotation_time < 0;rotation_time = 0;end
     if processing_time > ipi;processing_time=ipi;end
     
-    %bat steering--------
+    %% bat steering--------
     if rand_phase==1
         leftgains = LEFT.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(LEFT.gains_linear,1)));
         rightgains = RIGHT.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(RIGHT.gains_linear,1)));
@@ -150,7 +150,7 @@ for iteration = 1:iteration_steps
     nr_reflectors = [sum(LEFT.gains > 0) sum(RIGHT.gains > 0) sum(TOP.gains > 0) sum(BOTTOM.gains > 0)];
     %%%% number of relectors after selection
     
-    %%%% gt
+    %% gt
     steermat = [abs(sum(leftgains)),abs(sum(rightgains)), abs(sum(topgains)),abs(sum(bottomgains))];
     steermat = 20*log10(steermat/(2*10.^-5));
     steermat(isinf(steermat))=0;
@@ -248,7 +248,7 @@ for iteration = 1:iteration_steps
     
 
     %% apply elevation and azimuth constraints
-    if strcmp(worldshape,'H');current_el=0;end
+%     if strcmp(worldshape,'H');current_el=0;end
     %     if strcmp(worldshape,'V');current_az=0;end
     %if strcmp(worldshape,'T');current_el=0;end
     %     if strcmp(worldshape,'R1');current_el=0;end

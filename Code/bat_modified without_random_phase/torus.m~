@@ -1,11 +1,10 @@
-clc
-clear
-close all
+function [Xlist,Ylist,Zlist] = torus(Rring,Rtorus,x,y,z)
+
 
 %% // Ring properties
-ring.x0 = 5 ;                 %// Center of ring
-ring.y0 = 0 ;                 %// Center of ring
-ring.radius = 5   ;  %// Radius of core circle profile
+ring.x0 = x ;                 %// Center of ring
+ring.y0 = y ;                 %// Center of ring
+ring.radius = Rring   ;         %// Radius of core circle profile
 ring.nDiv   = 300  ;             %// number of divisions for the core circle profile
 ring.theta  = linspace(0,2*pi,ring.nDiv) ;
 ring.X = cos(ring.theta) * ring.radius + ring.x0 ;
@@ -43,15 +42,8 @@ for ip = 1:nCS
    Z(ip,:) = csZ  ;
 end
 
-
-
-%% Put x y z into lists
-Xlist = X(:);
-Ylist = Y(:);
-Zlist = Z(:);
-
 %% // Plot the final surface
-hs = surf(Xlist,Ylist,Zlist) ;
+hs = surf(X,Y,Z) ;
 grid on;
 set(hs,'FaceColor',[.7 .7 .7],'FaceAlpha',0.5,'EdgeAlpha',0.2)
 view(155,26)
@@ -59,4 +51,10 @@ view(155,26)
 axis equal
 xlabel('X') ; ylabel('Y') ; zlabel('Z') ;
 
+%% Put x y z into lists
+Xlist = X(:);
+Ylist = Y(:);
+Zlist = Z(:);
+
+end
 

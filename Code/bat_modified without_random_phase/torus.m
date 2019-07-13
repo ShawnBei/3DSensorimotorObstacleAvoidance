@@ -1,19 +1,18 @@
-clc
-clear
-close all
+function R = torus(Rring,Rtorus,x,y,z)
+
 
 %% // Ring properties
-ring.x0 = 5 ;                 %// Center of ring
-ring.y0 = 0 ;                 %// Center of ring
-ring.radius = 5   ;  %// Radius of core circle profile
-ring.nDiv   = 300  ;             %// number of divisions for the core circle profile
+ring.x0 = x ;                 %// Center of ring
+ring.y0 = y ;                 %// Center of ring
+ring.radius = Rring   ;         %// Radius of core circle profile
+ring.nDiv   = 100  ;             %// number of divisions for the core circle profile
 ring.theta  = linspace(0,2*pi,ring.nDiv) ;
 ring.X = cos(ring.theta) * ring.radius + ring.x0 ;
 ring.Y = sin(ring.theta) * ring.radius + ring.y0 ;
 
 %% // Create a base CIRCULAR cross section
-cs.Ndiv = 100 ; % 
-cs.radius = 1   ; %// Radius of each cross section circle
+cs.Ndiv = 80 ; % 
+cs.radius = Rtorus   ; %// Radius of each cross section circle
 % cs.rout = 0.25;
 cs.theta = linspace(0,2*pi,cs.Ndiv) ;
 Npts = length(cs.theta) ;
@@ -24,7 +23,7 @@ csX = sin(cs.theta) * cs.radius ;
 csZ = cos(cs.theta) * cs.radius ;
 
 %% Generate coordinates for each cross section and merge them
-nCS = length(ring.X) ; %// number of cross sections composing the surface
+nCS = ring.nDiv ; %// number of cross sections composing the surface
 
 %// pre-allocation is always good
 X = zeros( nCS , Npts ) ;
@@ -43,20 +42,22 @@ for ip = 1:nCS
    Z(ip,:) = csZ  ;
 end
 
+%% // Plot the final surface
+hs = surf(X,Y,Z) ;
+grid on;
+set(hs,'FaceColor',[.7 .7 .7],'FaceAlpha',0.5,'EdgeAlpha',0.2)
+% view(155,26)
 
+axis equal
+xlabel('X') ; ylabel('Y') ; zlabel('Z') ;
+hold on
 
 %% Put x y z into lists
 Xlist = X(:);
 Ylist = Y(:);
 Zlist = Z(:);
 
-%% // Plot the final surface
-hs = surf(Xlist,Ylist,Zlist) ;
-grid on;
-set(hs,'FaceColor',[.7 .7 .7],'FaceAlpha',0.5,'EdgeAlpha',0.2)
-view(155,26)
+R = [Xlist,Ylist,Zlist];
 
-axis equal
-xlabel('X') ; ylabel('Y') ; zlabel('Z') ;
-
+end
 

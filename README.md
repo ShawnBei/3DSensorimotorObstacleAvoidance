@@ -170,12 +170,27 @@ Second attempt:
 - Do you have a down direction component yet?
   If not, think about a component implementing a preference for level flight and perhaps a preferred height. 
 - Turn around when closer than 0.1 m.
+  - Not possible, unless increase angular velocity when turn
 - Evaluate a longer time window.
 - Take out / reduce any random components and see what happens.
 - I don't understand how a random walk can occur in the interplay of a global attraction and local information... Perhaps this is what one needs to focus on.
 - Your aim should be to reduce randomness in the trajectories.
 
+### Week 4
 
+#### 16/07
 
+- Elevation problem
+  - When seperating elevation and azimuth, I did the same experiments (2d ring) setting one of them to 0 respectively, the results seemed to be correct.
+  - The problem might be the way I combined them?
 
+#### 17/07
+
+- 
+
+### Week 5
+
+#### 22/07
+
+- Find out a good way to solve the elevation problem
 

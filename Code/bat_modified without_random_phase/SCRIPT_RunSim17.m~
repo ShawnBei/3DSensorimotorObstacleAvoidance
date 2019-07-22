@@ -256,8 +256,8 @@ for ExperimentNr = RunExperiments
         
         %% Target
         a = 10;
-        b = 1;
-        c = 1;
+        b = -1;
+        c = 0;
         target = [a,b,c];
         
         %%

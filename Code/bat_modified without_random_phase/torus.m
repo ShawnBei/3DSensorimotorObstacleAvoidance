@@ -43,7 +43,7 @@ for ip = 1:nCS
 end
 
 %% // Plot the final surface
-hs = surf(X,Y,Z) ;
+hs = surf(X,Z,Y) ;%1 and 2 change position
 grid on;
 set(hs,'FaceColor',[.7 .7 .7],'FaceAlpha',0.5,'EdgeAlpha',0.2)
 % view(155,26)
@@ -54,8 +54,8 @@ hold on
 
 %% Put x y z into lists
 Xlist = X(:);
-Ylist = Y(:);
-Zlist = Z(:);
+Ylist = Z(:);
+Zlist = Y(:);%
 
 R = [Xlist,Ylist,Zlist];
 

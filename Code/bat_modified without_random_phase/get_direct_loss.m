@@ -25,7 +25,7 @@ switch flag
         direct_loss = (cos(thetaRight) - 1) * 20;
         
     case 3 % top ear
-        thetaTop = theta - 0.5236;
+        thetaTop = theta + 0.5236;
         for i = 1:m
             if thetaTop(i,1) > pi
                 thetaTop(i,1) = 2*pi - thetaTop(i,1);
@@ -36,7 +36,7 @@ switch flag
         direct_loss = (cos(thetaTop) - 1) * 20;
         
     case 4 % bottom ear
-        thetaBottom = theta + 0.5236;
+        thetaBottom = theta - 0.5236;
         for i = 1:m
             if thetaBottom(i,1) > pi
                 thetaBottom(i,1) = 2*pi - thetaBottom(i,1);

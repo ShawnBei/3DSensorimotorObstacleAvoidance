@@ -194,3 +194,9 @@ Second attempt:
 
 - Find out a good way to solve the elevation problem
 
+#### 25/07
+
+Tasks:
+
+- Prefered fly height —> y 
+- Limited elevation angle —>?

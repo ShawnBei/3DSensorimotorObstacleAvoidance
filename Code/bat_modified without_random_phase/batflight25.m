@@ -46,6 +46,8 @@ heading = [0;0;1];
 X_axis = [1;0;0];
 Y_axis = [0;1;0];
 
+heading_el_sum = 0;
+
 
 if doplot==0;mymovie=NaN;end
 last_wandering = Inf;
@@ -56,7 +58,8 @@ for iteration = 1:iteration_steps
     
     [az,el,objrange]= mycart2sph(X,Y,Z);
     
-    %     reflector_strenght = randrange(min(attenuation_range(:)),max(attenuation_range(:)),size(az,1));
+    %     reflector_strenght =
+    %     randrange(min(attenuation_range(:)),max(attenuation_range(:)),size(az,1));
     reflector_strenght = -20;
     
     LEFT = call(1,  az,objrange,delay_window,reflector_strenght);
@@ -83,7 +86,8 @@ for iteration = 1:iteration_steps
     if isnan(linear_velocity);linear_velocity=max_vel;end
     
     %%%% angular velocity related to linear velocity
-    magnitude = interp1([0 10],[666 -500],linear_velocity);
+    %     magnitude = interp1([0 10],[666 -500],linear_velocity);
+    magnitude = interp1([0 6],[666 10],linear_velocity);
     if magnitude<0;magnitude=0;end
     
     %set  rotation time and processing time
@@ -119,160 +123,92 @@ for iteration = 1:iteration_steps
     current_az_sign = options(1,minindexLR);
     current_el_sign = options(2,minindexTB);
     
-    %     if gorandom>0;current_az_sign = randsample([-1,1],1);current_el_sign = randsample([-1,1],1);end
-    %     if gorandom>1;magnitude = randrange(0,magnitude,[1 1]);end
-    %     if earsfixed == 1;current_el_sign = randsample([-1,1],1);end
+    %     if gorandom>0;current_az_sign =
+    %     randsample([-1,1],1);current_el_sign = randsample([-1,1],1);end
+    %     if gorandom>1;magnitude = randrange(0,magnitude,[1 1]);end if
+    %     earsfixed == 1;current_el_sign = randsample([-1,1],1);end
     
-    %scale azimuth and elevation rotation with rotation time
+    % scale azimuth and elevation rotation with rotation time
     current_az=deg2rad(current_az_sign*magnitude*rotation_time);
     current_el=deg2rad(current_el_sign*magnitude*rotation_time);
     
-    %% 1. compare current vector and target vector
-    %     target_vector = target - bat_pos;
-    %     target_az = atan2(target_vector(3), target_vector(1));
-    %     target_el = atan2(target_vector(2), target_vector(3));
-    %     %target_vector = target_vector/(sqrt(target_vector(1)^2 + target_vector(2)^2 + target_vector(3)^2));
-    %
-    %     rads = deg2rad(current_el);Rot1 = [1 0 0;0 cos(rads) -sin(rads);0 sin(rads) cos(rads)];
-    %     rads = deg2rad(current_az);Rot2 = [cos(rads) 0 -sin(rads);0 1 0;sin(rads) 0 cos(rads)];
-    %     bat_current_rot = bat_rot * Rot1 * Rot2;
-    %     bat_current_displacement = bat_current_rot * [0;0;1];
-    %     bat_current_displacement = bat_current_displacement';
-    %     bat_current_az = atan2(bat_current_displacement(3), bat_current_displacement(1));
-    %     bat_current_el = atan2(bat_current_displacement(2), bat_current_displacement(3));
-    %
-    %     delta_az = bat_current_az - target_az;
-    %     delta_el = bat_current_el - target_el;
-    %
-    %     if delta_az > pi
-    %         delta_az = 2*pi - delta_az;
-    %     elseif delta_az < -pi
-    %         delta_az = 2*pi + delta_az;
-    %     end
-    %     if delta_el > pi
-    %         delta_el = 2*pi - delta_el;
-    %     elseif delta_el < -pi
-    %         delta_el = 2*pi + delta_el;
-    %     end
-    %
-    %     current_az = current_az - delta_az*0.5;
-    %     current_el = current_el - delta_el*0.5;
     
-    
-    %% 2. Fly towards target except the closest distance is smaller than 0.034m
-    %(might move this block before current_az calculation)
+    %% target search
+    % (might move this block before current_az calculation)
     
     % Determine if the distance is bigger than 0.034m
-        if closest_distance > 0.3
-            % Calculate target vector and the desired turning angle(az and el)
-            target_vector = target - bat_pos;
-            target_az = atan2(target_vector(3), target_vector(1));
-%             target_el = atan2(target_vector(2), target_vector(3));
-            target_vector_ini = target - bat_pos_ini;
-%             target_el = atan2(target_vector_ini(2), target_vector_ini(3));
-            target_el = target_vector_ini(2);
-            bat_az = atan2(heading(3),heading(1));
-%             bat_el = atan2(heading(2),heading(3));
-            bat_el = bat_pos(2);
-    
-            % Compare bat az and target vector
-            delta_az = target_az - bat_az;
-            delta_el = target_el - bat_el;
-%     delta_el
-            if delta_az > pi
-                delta_az = -2*pi + delta_az;
-            elseif delta_az < -pi
-                delta_az = 2*pi + delta_az;
-            end
-%             if delta_el > pi
-%                 delta_el = -2*pi + delta_el;
-%             elseif delta_el < -pi
-%                 delta_el = 2*pi + delta_el;
-%             end
-    
-            % Determine if delta angle can be achieved in this iteration
-            delta_az_abs = abs(delta_az);
-            delta_el_abs = abs(delta_el);
-            Max_angle = deg2rad(magnitude*rotation_time);
-    
-            if delta_az_abs < Max_angle
-                current_az = delta_az;
-            else
-                current_az = sign(delta_az) * Max_angle;
-            end
-            if delta_el_abs < Max_angle
-                current_el = delta_el;
-            else
-                current_el = sign(delta_el) * Max_angle;
-            end
-    
+    if closest_distance > 0.3
+        
+        % Calculate target vector and the desired turning angle(az and el)
+        target_vector = target - bat_pos;
+        target_az = atan2(target_vector(3), target_vector(1));
+        target_el = target_vector(2);                           %target height
+        %         target_el = 0;                                % prefered fly height
+        bat_az = atan2(heading(3),heading(1));
+        bat_el = heading(2);
+        
+        % Compare bat az and target vector
+        delta_az = target_az - bat_az;
+        delta_el = 0.35*(target_el - bat_el);
+        
+        if delta_az > pi
+            delta_az = -2*pi + delta_az;
+            a = 1;
+        elseif delta_az < -pi
+            delta_az = 2*pi + delta_az;
+            a =2;
         end
+        %             if delta_el > pi
+        %                 delta_el = -2*pi + delta_el;
+        %             elseif delta_el < -pi
+        %                 delta_el = 2*pi + delta_el;
+        %             end
+        
+        % Determine if delta angle can be achieved in this iteration
+        delta_az_abs = abs(delta_az);
+        delta_el_abs = abs(delta_el);
+        Max_angle = deg2rad(magnitude * rotation_time);
+        
+        if delta_az_abs < Max_angle
+            current_az = delta_az; 
+        else
+            current_az = sign(delta_az) * Max_angle;
+        end
+        if delta_el_abs < Max_angle
+            current_el = delta_el;
+        else
+            current_el = sign(delta_el) * Max_angle;
+        end
+        
+        %         delta_az
+        %         Max_angle
+        %         magnitude
+        %         rotation_time
+        %         processing_time
+        
+    end
     
+    %% constrain on elevation
     
-    %% apply elevation and azimuth constraints
-%         if strcmp(worldshape,'H');current_el=0;end
-%     if strcmp(worldshape,'H');current_az=0;end
-    %     if strcmp(worldshape,'T');current_el=0;end
-    %     if strcmp(worldshape,'R1');current_el=0;end
-    %     if strcmp(worldshape,'R2');current_el=0;end
-    %     if strcmp(worldshape,'MH');current_el=0;end
-    %     if strcmp(worldshape,'MV');current_az=0;end
+    if strcmp(worldshape,'H');current_el=0;end
     
-    %constrain elevation
-    %         if current_el > 0;el_step = -0.0873;end     % -5 degrees
-    %         if current_el < 0;el_step =  0.0873;end     % 5 degrees
+%     y = [0 1 0];
+%     alpha = atan2d(norm(cross(heading,y)),dot(heading,y));
+%     if alpha < 30 && current_el > 0
+%         current_el = 0;
+%     elseif alpha > 150 && current_el < 0
+%         current_el = 0;
+%     end
+
+    heading_el_sum_temp = heading_el_sum + current_el;
+    if heading_el_sum_temp > 60/180*pi || heading_el_sum_temp < -60/180*pi
+        current_el = 0;
+    else
+        heading_el_sum = heading_el_sum_temp;
+    end
+
+
     
-    %     el_step =  0.0349;
-    
-    %%% set constrains to el
-    %         while 1
-    %
-    %             rads = current_el;Rot1 = [1 0 0;0 cos(rads) -sin(rads);0 sin(rads) cos(rads)];
-    %             rads = current_az;Rot2 = [cos(rads) 0 -sin(rads);0 1 0;sin(rads) 0 cos(rads)];
-    %             predicted_bat_rot = bat_rot *  Rot1 * Rot2;
-    %
-    %             pointing_vector = predicted_bat_rot*[0;0;1];
-    %
-    % %             alpha = [0 1 0] * pointing_vector; %dot product (single number)
-    % %             angle_y = rad2deg(acos(alpha)); %angle with y vector
-    % %             world_elevation = 90 - angle_y;
-    %             %disp([angle_y world_elevation])
-    %
-    %             alpha = atan2(pointing_vector(2),pointing_vector(3));
-    %
-    % %             elevation_ok = inrange(alpha,[-max_slope max_slope]);
-    % % %             if constrained==0;break;end
-    % %             if elevation_ok;break;end
-    % %             current_el = current_el + el_step;
-    %
-    %             if alpha > max_slope
-    %                 current_el = current_el - el_step;
-    %             elseif alpha < -max_slope
-    %                 current_el = current_el + el_step;
-    %             else
-    %                 break;
-    %             end
-    %
-    %         end
-    
-    
-    % wandering handling
-    last_wandering = last_wandering + 1;
-    %     is_wandering = 0;
-    %     if ~strcmp(worldshape(1),'R') && sqrt(sum(bat_pos.^2))>(maxdist-0.15);is_wandering = 1;end
-    %     if strcmp(worldshape(1),'R') && ~point_within(bat_pos,X,Y,Z) == 1;is_wandering = 1;end
-    %
-    %     if is_wandering == 1
-    %         homepos = bat_pos*-bat_rot;
-    %         [home_az,home_el,~]=mycart2sph(homepos(1),homepos(2),homepos(3));
-    %         current_az = home_az;
-    %         current_el = -home_el;
-    %         rotation_time = 0.1;
-    %         handlelog(iteration-1)=1;
-    %         last_wandering = 0;
-    %     end
-    
-    %     if last_wandering>1
     %% move world--during processing and wait
     movement = linear_velocity * processing_time;
     %     [X,Y,Z,world_rot] = worldflow([X,Y,Z], 0, 0, world_rot, movement);
@@ -281,42 +217,46 @@ for iteration = 1:iteration_steps
     bat_pos = bat_pos + heading' * movement;
     
     %% move world--during rotation time
+
+    % constrain the angle between heading and y axis
+%     if current_el > 0;el_step = -0.0873;end
+%     if current_el < 0;el_step =  0.0873;end
+%     Max_angle = deg2rad(magnitude * rotation_time); %%
+    
+%     while 1
+%         [heading_temp,Y_axis_temp,X_axis_temp] = headingRot(heading,Y_axis,X_axis,current_el,current_az);
+%         y = [0 1 0];
+%         alpha = atan2d(norm(cross(heading_temp,y)),dot(heading_temp,y))
+%         if alpha > 80 && alpha < 100
+%             heading = heading_temp;
+%             Y_axis = Y_axis_temp;
+%             X_axis = X_axis_temp;
+%             break;
+%         end
+%         
+%         if abs(current_el) > Max_angle
+%             heading = heading_temp;
+%             Y_axis = Y_axis_temp;
+%             X_axis = X_axis_temp;
+%             break;
+%         end
+%         current_el = current_el + el_step;
+%     end
+
+    
+    
+    % move to the when current_el is determined
     movement = linear_velocity * rotation_time;
-    %     [X,Y,Z,world_rot] = worldflow([X,Y,Z], current_az, current_el,world_rot, movement);
     [X,Y,Z] = worldflow([X,Y,Z], current_az, current_el, movement);
     
-
-    W_x = [0             -X_axis(3)      X_axis(2);
-           X_axis(3)     0               -X_axis(1);
-           -X_axis(2)    X_axis(1)       0        ];     % el
-
-    rads = -current_el;
-    RotX = eye(3) + sin(rads) * W_x + (2*(sin(rads/2)^2)) * (W_x^2);
-    
-    % elevation rotation 
-    Y_axis = RotX * Y_axis;
-    heading = RotX * heading;
-    
-     W_y = [0             -Y_axis(3)      Y_axis(2);
-           Y_axis(3)     0               -Y_axis(1);
-           -Y_axis(2)    Y_axis(1)       0        ];     % az
-       
-    rads = -current_az;
-    RotY = eye(3) + sin(rads) * W_y + (2*(sin(rads/2)^2)) * (W_y^2);
-
-    % azimuth rotation
-    X_axis = RotY * X_axis;
-    heading = RotY *  heading;
-   
+    [heading,Y_axis,X_axis] = headingRot(heading,Y_axis,X_axis,current_el,current_az);
     bat_pos = bat_pos + heading' * movement;
-    %     reflectors_pos_last = [az,el,objrange];
     
-    %     plot3(X(:),Y(:),Z(:),'.b')
-    %     hold off
+    %     reflectors_pos_last = [az,el,objrange];
+    %     plot3(X(:),Y(:),Z(:),'.b') hold off
     
     
     %% logging
-    
     reflectors_nr_Log(iteration,:) = nr_reflectors;
     steermatlog(iteration,:)=steermat;
     objdistlog(iteration) = closest_distance;
@@ -324,12 +264,12 @@ for iteration = 1:iteration_steps
     ipi_log(iteration)=ipi;
     rotation_log_az(iteration) = current_az;
     rotation_log_el(iteration) = current_el;
-    %     displayinfo = [iteration current_az current_el target_el bat_el delta_el];
-    displayinfo = [iteration current_az current_el ];
+    
+    displayinfo = [iteration rad2deg(current_az) rad2deg(current_el) rad2deg(heading_el_sum)];
     str =sprintf('%+03.2f\t',displayinfo);
     disp(str);
-
     velocities(iteration) = linear_velocity;
+    
     %% Destination check
     
     
@@ -354,8 +294,5 @@ output.rotation_log_el = rotation_log_el;
 output.reflectors_pos_last = reflectors_pos_last;
 
 if log_gain_doppler==1;save('log.mat','gain_log','doppler_log');end
-
-
-
 
 end

@@ -29,7 +29,7 @@ for ExperimentNr = RunExperiments
             if isnan(settings.nr_replications);settings.nr_replications=1;end
             settings.maxdist =20;
             settings.iteration_steps = 300;
-            settings.worldshape = 'H';
+            settings.worldshape = '3D';  % 'H' for 2D and '3D' for 3D
             ClusterSize = 250;
             ClustVar = 0.5;
             Nrclusters = 100;
@@ -68,10 +68,11 @@ for ExperimentNr = RunExperiments
         %% 2d corridor
         %          [x,y,z] = ndgrid(-0.5:1:0.5, 0, -10:0.01:10);
         %          R = [x(:),y(:),z(:)];
-        %         a = 0;
-        %         b = 0;
-        %         c = -5;
+        %          a = 0;
+        %          b = 0;
+        %          c = -5;
         %          target = [a, b, c];
+%         settings.worldshape = 'H';
         
         %% 2d Circular corridor
         %         r1 = 4;
@@ -91,16 +92,16 @@ for ExperimentNr = RunExperiments
         %         R1 = [y1(:), x1(:), z1(:)];
         %         R2 = [y2(:), x2(:), z2(:)];
         %         R = [R1;R2];
-        %
+        %         settings.worldshape = 'H';
         
         %% 3d wires
-        %         [x,y,z] = ndgrid(-1.2:1:12, -8:0.1:8, -1.2:1:12);
-        %         R = [x(:),y(:),z(:)];
-        %
-        %         a = 10; % X
-        %         b = 0;  % Y height
-        %         c = 0; % Z
-        %         target = [a,b,c];
+%                 [x,y,z] = ndgrid(-6.1:1:6, -8:0.1:8, -0.8:1:14);
+%                 R = [x(:),y(:),z(:)];
+%         
+%                 a = 2; % X
+%                 b = 3;  % Y height
+%                 c = 10; % Z
+%                 target = [a,b,c];
         
         %% 3d clusters
         %         cluster_nr = 200;
@@ -140,7 +141,7 @@ for ExperimentNr = RunExperiments
         R = torus(Rring,Rtorus,x0,y0,z0);
         
         a = 10; % X
-        b = 0;  % Y height
+        b = 0.7;  % Y height
         c = 0; % Z
         target = [a,b,c];
         
@@ -188,8 +189,10 @@ for ExperimentNr = RunExperiments
     figure (1)
     set(1,'position',[500 300 900 700])
     plot3(batpositions(:,1), batpositions(:,2), batpositions(:,3), '.r')
+%     plot3(batpositions(:,1), batpositions(:,3), batpositions(:,2), '.r')
     hold on
-    %     plot3(R(:,1),R(:,2),R(:,3),'.b')
+    plot3(R(:,1),R(:,2),R(:,3),'.b')
+%     plot3(R(:,1),R(:,3),R(:,2),'.b')
     axis equal
     %     axis auto
     %     xlim([-100 100])
@@ -198,7 +201,10 @@ for ExperimentNr = RunExperiments
     xlabel('X')
     ylabel('Y')
     zlabel('Z')
+%     ylabel('Z')
+%     zlabel('Y')
     text(a,b,c,'Target')
+%     text(a,c,b,'Target')
     text(0,0,0,'Start')
     grid on
 end

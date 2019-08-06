@@ -28,8 +28,8 @@ for ExperimentNr = RunExperiments
         case 1
             if isnan(settings.nr_replications);settings.nr_replications=1;end
             settings.maxdist =20;
-            settings.iteration_steps = 300;
-            settings.worldshape = '3D';
+            settings.iteration_steps = 200;
+            settings.worldshape = '3D';  % 'H' for 2D and '3D' for 3D
             ClusterSize = 250;
             ClustVar = 0.5;
             Nrclusters = 100;
@@ -95,55 +95,55 @@ for ExperimentNr = RunExperiments
         %         settings.worldshape = 'H';
         
         %% 3d wires
-                [x,y,z] = ndgrid(-6:1:6, -8:0.1:8, -1.2:1:14);
-                R = [x(:),y(:),z(:)];
-        
-                a = 2; % X
-                b = 0;  % Y height
-                c = 10; % Z
-                target = [a,b,c];
+%                 [x,y,z] = ndgrid(-6.3:1:6, -8:0.1:8, -8.8:1:14);
+%                 R = [x(:),y(:),z(:)];
+%         
+%                 a = 2; % X
+%                 b = 3;  % Y height
+%                 c = 10; % Z
+%                 target = [a,b,c];
         
         %% 3d clusters
-        %         cluster_nr = 200;
-        %         min = -10;
-        %         max = 50;
-        %         xcenter = randrange(min,max,cluster_nr);
-        %         ycenter = randrange(-10,10,cluster_nr);
-        %         zcenter = randrange(min,max,cluster_nr);
-        %
-        %         cluster_range = 1;
-        %         ref_nr_per_cluster = 300;
-        %         x = [];
-        %         y = [];
-        %         z = [];
-        %
-        %         for i = 1:1:cluster_nr
-        %             xf = randn(ref_nr_per_cluster, cluster_range) + xcenter(i);
-        %             yf = randn(ref_nr_per_cluster, cluster_range) + ycenter(i);
-        %             zf = randn(ref_nr_per_cluster, cluster_range) + zcenter(i);
-        %             x = [x;xf];
-        %             y = [y;yf];
-        %             z = [z;zf];
-        %         end
-        %
-        %         R = [x(:), y(:), z(:)];
-        
-        %         a = 30; % X
-        %         b = 5;  % Y height
-        %         c = 30; % Z
-        %         target = [a,b,c];
-        
+%                 cluster_nr = 200;
+%                 min = -20;
+%                 max = 20;
+%                 xcenter = randrange(min,max,cluster_nr);
+%                 ycenter = randrange(-20,20,cluster_nr);
+%                 zcenter = randrange(min,max,cluster_nr);
+%         
+%                 cluster_range = 1;
+%                 ref_nr_per_cluster = 300;
+%                 x = [];
+%                 y = [];
+%                 z = [];
+%         
+%                 for i = 1:1:cluster_nr
+%                     xf = randn(ref_nr_per_cluster, cluster_range) + xcenter(i);
+%                     yf = randn(ref_nr_per_cluster, cluster_range) + ycenter(i);
+%                     zf = randn(ref_nr_per_cluster, cluster_range) + zcenter(i);
+%                     x = [x;xf];
+%                     y = [y;yf];
+%                     z = [z;zf];
+%                 end
+%         
+%                 R = [x(:), y(:), z(:)];
+%         
+%                 a = 10; % X
+%                 b = 5;  % Y height
+%                 c = 10; % Z
+%                 target = [a,b,c];
+%         
         
         %% 3D torus / circular corridor
-%         Rring = 5;                              % radius of ring
-%         x0 = 5; y0 = 0; z0 = 0;                 % center of ring
-%         Rtorus = 2;                             % radius of torus
-%         R = torus(Rring,Rtorus,x0,y0,z0);
-%         
-%         a = 10; % X
-%         b = 0;  % Y height
-%         c = 3; % Z
-%         target = [a,b,c];
+        Rring = 5;                              % radius of ring
+        x0 = 5; y0 = 0; z0 = 0;                 % center of ring
+        Rtorus = 2;                             % radius of torus
+        R = torus(Rring,Rtorus,x0,y0,z0);
+        
+        a = 10; % X
+        b = 1;  % Y height
+        c = 2; % Z
+        target = [a,b,c];
         
         %%
         %         if strcmp(settings.worldshape,'T');  R = MyTorus(10,2,45);end
@@ -189,10 +189,8 @@ for ExperimentNr = RunExperiments
     figure (1)
     set(1,'position',[500 300 900 700])
     plot3(batpositions(:,1), batpositions(:,2), batpositions(:,3), '.r')
-%     plot3(batpositions(:,1), batpositions(:,3), batpositions(:,2), '.r')
     hold on
-    plot3(R(:,1),R(:,2),R(:,3),'.b')
-%     plot3(R(:,1),R(:,3),R(:,2),'.b')
+%     plot3(R(:,1),R(:,2),R(:,3),'.b')
     axis equal
     %     axis auto
     %     xlim([-100 100])
@@ -201,10 +199,7 @@ for ExperimentNr = RunExperiments
     xlabel('X')
     ylabel('Y')
     zlabel('Z')
-%     ylabel('Z')
-%     zlabel('Y')
     text(a,b,c,'Target')
-%     text(a,c,b,'Target')
     text(0,0,0,'Start')
     grid on
 end

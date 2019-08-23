@@ -37,6 +37,9 @@ collision = 0;
 reaction_time = 50/1000;
 tortuosity = 0;
 
+min_phase = -20/180*pi;
+max_phase = 20/180*pi;
+
 for iteration = 1:iteration_steps
     
     [az,el,objrange]= mycart2sph(X,Y,Z);
@@ -83,10 +86,10 @@ for iteration = 1:iteration_steps
     
     %% bat steering--------
     if rand_phase==1
-        leftgains = LEFT.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(LEFT.gains_linear,1)));
-        rightgains = RIGHT.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(RIGHT.gains_linear,1)));
-        topgains = TOP.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(TOP.gains_linear,1)));
-        bottomgains = BOTTOM.gains_linear.*exp(sqrt(-1)*randrange(-pi,pi,size(BOTTOM.gains_linear,1)));
+        leftgains = LEFT.gains_linear.*exp(sqrt(-1)*randrange(min_phase,max_phase,size(LEFT.gains_linear,1)));
+        rightgains = RIGHT.gains_linear.*exp(sqrt(-1)*randrange(min_phase,max_phase,size(RIGHT.gains_linear,1)));
+        topgains = TOP.gains_linear.*exp(sqrt(-1)*randrange(min_phase,max_phase,size(TOP.gains_linear,1)));
+        bottomgains = BOTTOM.gains_linear.*exp(sqrt(-1)*randrange(min_phase,max_phase,size(BOTTOM.gains_linear,1)));
     end
     if rand_phase==0
         leftgains = LEFT.gains_linear.*exp(sqrt(-1)*randrange(0,0,size(LEFT.gains_linear,1)));
@@ -128,7 +131,7 @@ for iteration = 1:iteration_steps
     target_vector = target - bat_pos;
     target_distance = norm(target_vector);
     
-    if target_distance <= 0.15
+    if target_distance <= 0.5
         break;
     end
     
@@ -146,9 +149,9 @@ for iteration = 1:iteration_steps
             
             % Compare heading and target vector
             delta_az = target_az - bat_az;
-            delta_el = 0.35*(target_el - bat_el);
+%             delta_el = 0.35*(target_el - bat_el);
 %             delta_el = ((1/a)^abs(target_el - bat_el)) *(target_el - bat_el);
-%             delta_el = (-0.07*(target_el - bat_el) +0.2) *(target_el - bat_el);
+            delta_el = -0.006*abs(target_el - bat_el)*(target_el - bat_el) +0.3;
             
             % constrain delta_az between -pi to pi
             % no need for delta_el, because delta_el is not angle
@@ -165,6 +168,7 @@ for iteration = 1:iteration_steps
             delta_el_abs = abs(delta_el);
             Max_angle = deg2rad(angular_vel * rotation_time);
             %             Max_angle_el = (1/2.5)^abs(target_el - bat_el);
+%             Max_angle_el = -0.03*(target_el - bat_el) + 0.3;
             
             if delta_az_abs < Max_angle
                 current_az = delta_az;
@@ -188,9 +192,11 @@ for iteration = 1:iteration_steps
             target_el = target_vector(2);                           % target height
             bat_el = heading(2);                                    % bat height
             delta_az = target_az - bat_az;
-            delta_el = 0.35*(target_el - bat_el);
+%             delta_el = 0.35*(target_el - bat_el);
 %             delta_el = ((1/a)^abs(target_el - bat_el)) *(target_el - bat_el);
 %             delta_el = (-0.07*(target_el - bat_el) +0.2) *(target_el - bat_el);
+            sign_el = sign(target_el - bat_el);
+            delta_el = sign_el*(-0.006*(target_el - bat_el)^2 +0.3);
             
             if delta_az > pi
                 delta_az = -2*pi + delta_az;

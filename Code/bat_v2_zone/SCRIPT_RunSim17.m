@@ -2,30 +2,30 @@ clc
 clear
 close all
 
-RunExperiments = 4;
-plot_R = 1;
+RunExperiments = 6;
+plot_R = 0;
 
 for ExperimentNr = RunExperiments
     
-    settings.nr_replications = 1;
+    settings.nr_replications = 50;
     settings.emission_freq = 40000;
     settings.targetsearch = 1;
     settings.iteration_steps = 1000;
     settings.worldshape = '3D';
     
     %% bat variables
-    settings.innerzone = 0.3;
-    settings.outerzone = 0.5;
+    settings.innerzone = 0.2;
+    settings.outerzone = 0.3;
     zone_thickness = settings.outerzone - settings.innerzone;
     settings.delay_window = 0.001;
     settings.call_freq = 0.1;
-    settings.linear_vel_max = 6;
+    settings.linear_vel_max = 12;
     settings.linear_vel_min = 0.3;
     settings.angular_vel_max = 666;
     settings.angular_vel_min = 10;
     
     %% environment factors
-    settings.rand_phase      = 1;
+    settings.rand_phase      = 0;
     settings.reflector_str   = 1;
     settings.attenuation_range = [-8 -6];
     
@@ -38,7 +38,7 @@ for ExperimentNr = RunExperiments
             
             settings.Rring = 5;                                 % radius of ring
             settings.x0 = 5; settings.y0 = 0; settings.z0 = 0;  % center of ring
-            settings.Rtorus = 2;                                % radius of torus
+            settings.Rtorus = 1;                                % radius of torus
             settings.R = torus(settings.Rring,settings.Rtorus,settings.x0,settings.y0,settings.z0);
             %             [x,y,z] = ndgrid(4.5:0.1:5.5, -0.5:0.1:0.5, 3:0.1:3.5);
             %             R2 = [x(:),y(:),z(:)];
@@ -52,10 +52,10 @@ for ExperimentNr = RunExperiments
         case 4
             ResultFile = '3Dwires';
             
-            [x,y,z] = ndgrid(-0.3:1:18, -8:0.1:8, -0.8:1:18);
+            [x,y,z] = ndgrid(-0.3:0.7:18, -8:0.1:8, -0.8:0.7:18);
             settings.R = [x(:),y(:),z(:)];
             
-            settings.target = [14,0,15];
+            settings.target = [17,0,17];
             linear_distance = norm(settings.target);
             
             % 3d clusters
@@ -93,7 +93,7 @@ for ExperimentNr = RunExperiments
             temp = load('clustersGood.mat','settings');
             settings.R = temp.settings.R;
             settings.target = [15,0,15];
-            linear_distance = norm(settings.target);
+            linear_distance = norm(settings.target); 
     end
     
     distances           = NaN(settings.iteration_steps,  settings.nr_replications);
@@ -140,7 +140,7 @@ for ExperimentNr = RunExperiments
 %     b blue
 %     w white
 %     k black
-    colorstring = 'rgb';
+    colorstring = 'rgy';
     
     for j = 1:settings.nr_replications
         plot3(batpositions(:,1,j), batpositions(:,2,j), batpositions(:,3,j), 'Color',colorstring(j),'LineWidth',2)

@@ -49,7 +49,7 @@ for iteration = 1:iteration_steps
         reflector_strenght =randrange(min(attenuation_range(:)),max(attenuation_range(:)),size(az,1));
     elseif reflector_str == 0
         reflector_strenght = -10;
-    end  
+    end
     
     
     LEFT    = call(1, az, objrange, delay_window,reflector_strenght);
@@ -121,7 +121,7 @@ for iteration = 1:iteration_steps
     
     
     %% Collision times
-    if closest_distance <= 0.15
+    if closest_distance <= 0.18
         collision = collision + 1;
     end
     
@@ -149,9 +149,11 @@ for iteration = 1:iteration_steps
             
             % Compare heading and target vector
             delta_az = target_az - bat_az;
-%             delta_el = 0.35*(target_el - bat_el);
-%             delta_el = ((1/a)^abs(target_el - bat_el)) *(target_el - bat_el);
-            delta_el = -0.006*abs(target_el - bat_el)*(target_el - bat_el) +0.3;
+            delta_el = 0.3*(target_el - bat_el);
+            %             delta_el = ((1/a)^abs(target_el - bat_el)) *(target_el - bat_el);
+            %             delta_el = -0.006*abs(target_el - bat_el)*(target_el - bat_el) +0.3;
+%             sign_el = sign(target_el - bat_el);
+%             delta_el = sign_el*(-0.006*(target_el - bat_el)^2 +0.3);
             
             % constrain delta_az between -pi to pi
             % no need for delta_el, because delta_el is not angle
@@ -168,7 +170,7 @@ for iteration = 1:iteration_steps
             delta_el_abs = abs(delta_el);
             Max_angle = deg2rad(angular_vel * rotation_time);
             %             Max_angle_el = (1/2.5)^abs(target_el - bat_el);
-%             Max_angle_el = -0.03*(target_el - bat_el) + 0.3;
+            %             Max_angle_el = -0.03*(target_el - bat_el) + 0.3;
             
             if delta_az_abs < Max_angle
                 current_az = delta_az;
@@ -180,10 +182,10 @@ for iteration = 1:iteration_steps
             else
                 current_el = sign(delta_el) * Max_angle;
             end
-         
             
             
-        % inside the zone
+            
+            % inside the zone
         elseif closest_distance >= inner_zone && closest_distance <= outer_zone
             
             target_vector = target - bat_pos;
@@ -192,11 +194,11 @@ for iteration = 1:iteration_steps
             target_el = target_vector(2);                           % target height
             bat_el = heading(2);                                    % bat height
             delta_az = target_az - bat_az;
-%             delta_el = 0.35*(target_el - bat_el);
-%             delta_el = ((1/a)^abs(target_el - bat_el)) *(target_el - bat_el);
-%             delta_el = (-0.07*(target_el - bat_el) +0.2) *(target_el - bat_el);
-            sign_el = sign(target_el - bat_el);
-            delta_el = sign_el*(-0.006*(target_el - bat_el)^2 +0.3);
+                        delta_el = 0.3*(target_el - bat_el);
+            %             delta_el = ((1/a)^abs(target_el - bat_el)) *(target_el - bat_el);
+            %             delta_el = (-0.07*(target_el - bat_el) +0.2) *(target_el - bat_el);
+%             sign_el = sign(target_el - bat_el);
+%             delta_el = sign_el*(-0.006*(target_el - bat_el)^2 +0.3);
             
             if delta_az > pi
                 delta_az = -2*pi + delta_az;
@@ -247,11 +249,11 @@ for iteration = 1:iteration_steps
     
     %% logging
     reflectors_nr_Log(iteration,:) = nr_reflectors;
-%     steermatlog(iteration,:)    = steermat;
+    %     steermatlog(iteration,:)    = steermat;
     objdistlog(iteration)       = closest_distance;
     batposlog(iteration,:)      = bat_pos;
-%     rotation_log_az(iteration)  = current_az;
-%     rotation_log_el(iteration)  = current_el;
+    %     rotation_log_az(iteration)  = current_az;
+    %     rotation_log_el(iteration)  = current_el;
     displayinfo = [iteration rad2deg(current_az) rad2deg(current_el)];
     str =sprintf('%+03.2f\t',displayinfo);
     disp(str);

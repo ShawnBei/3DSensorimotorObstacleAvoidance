@@ -2,7 +2,7 @@ clc
 clear
 close all
 
-RunExperiments = 6;
+RunExperiments = 4;
 plot_R = 1;
 
 for ExperimentNr = RunExperiments
@@ -10,7 +10,7 @@ for ExperimentNr = RunExperiments
     settings.nr_replications = 1;
     settings.emission_freq = 40000;
     settings.targetsearch = 1;
-    settings.iteration_steps = 1000;
+    settings.iteration_steps = 500;
     settings.worldshape = '3D';
     
     %% bat variables
@@ -25,7 +25,7 @@ for ExperimentNr = RunExperiments
     settings.angular_vel_min = 10;
     
     %% environment factors
-    settings.rand_phase      = 1;
+    settings.rand_phase      = 0;
     settings.reflector_str   = 1;
     settings.attenuation_range = [-8 -6];
     
@@ -55,7 +55,7 @@ for ExperimentNr = RunExperiments
             [x,y,z] = ndgrid(-0.3:1:18, -8:0.1:8, -0.8:1:18);
             settings.R = [x(:),y(:),z(:)];
             
-            settings.target = [14,0,15];
+            settings.target = [14,3,15];
             linear_distance = norm(settings.target);
             
             % 3d clusters
@@ -140,7 +140,7 @@ for ExperimentNr = RunExperiments
 %     b blue
 %     w white
 %     k black
-    colorstring = 'rgb';
+    colorstring = 'rgy';
     
     for j = 1:settings.nr_replications
         plot3(batpositions(:,1,j), batpositions(:,2,j), batpositions(:,3,j), 'Color',colorstring(j),'LineWidth',2)

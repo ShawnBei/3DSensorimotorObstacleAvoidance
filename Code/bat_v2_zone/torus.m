@@ -1,4 +1,4 @@
-function R = torus(Rring,Rtorus,x,y,z)
+function [R, X, Y, Z] = torus(Rring,Rtorus,x,y,z)
 
 
 %% // Ring properties
@@ -45,7 +45,7 @@ end
 %% // Plot the final surface
 hs = surf(X,Z,Y) ;%1 and 2 change position
 grid on;
-set(hs,'FaceColor',[.7 .7 .7],'FaceAlpha',0.5,'EdgeAlpha',0.2)
+set(hs,'FaceColor',[.9 .9 .9],'FaceAlpha',0.3,'EdgeAlpha',0.1)
 % view(155,26)
 
 axis equal

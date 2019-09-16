@@ -1,6 +1,6 @@
 # 3DSensorimotorObstacleAvoidance
 
-Final Project, University of Bristol, MSc Robotics
+Final Project, University of Bristol, University of West England, MSc Robotics
 
 
 
